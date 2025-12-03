@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     SMTP_FROM_EMAIL: str = ""
     SMTP_USE_TLS: bool = True
+    # OAuth Configuration
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+    OAUTH_REDIRECT_URL: str = "http://localhost:8000/auth/oauth/callback"
+    SESSION_SECRET_KEY: str = "change-this-secret-key-in-production"
 
     model_config = {
         "env_file": ".env",

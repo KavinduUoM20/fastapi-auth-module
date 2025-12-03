@@ -4,9 +4,12 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import SQLAlchemyError
+from starlette.middleware.sessions import SessionMiddleware
 from app.session import create_db_and_tables
 from app.users import router as users_router
 from app.auth import router as auth_router
+from app.auth.oauth_router import router as oauth_router
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +26,9 @@ async def lifespan(app: FastAPI):
     # Shutdown (if needed)
 
 app = FastAPI(title="Agent App", lifespan=lifespan)
+
+# Add session middleware for OAuth
+app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
 
 # Global exception handlers
 @app.exception_handler(SQLAlchemyError)
@@ -49,8 +55,9 @@ async def general_exception_handler(request: Request, exc: Exception):
         content={"detail": "An internal error occurred"}
     )
 
-#user routes
+# Routes
 app.include_router(users_router.router)
 app.include_router(auth_router.router)
+app.include_router(oauth_router)
 
 #uvicorn app.main:app --reload
