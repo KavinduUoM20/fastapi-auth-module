@@ -9,3 +9,6 @@ pydantic[email]
 psycopg2-binary
 httpx
 jinja2
+authlib
+starlette
+itsdangerous
