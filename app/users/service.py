@@ -35,3 +35,8 @@ class UserService:
     @staticmethod
     def get_user_by_email(session: Session, email: str) -> User | None:
         return session.exec(select(User).where(User.email == email)).first()
+
+    @staticmethod
+    def get_all_users(session: Session) -> list[UserRead]:
+        users = session.exec(select(User)).all()
+        return [UserRead.model_validate(user) for user in users]
